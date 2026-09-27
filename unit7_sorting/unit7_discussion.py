@@ -28,7 +28,28 @@ def bubble_sort(lst):
     - Add meaningful comments.
 
     """
-    pass
+    # Make a copy so the original list is not changed.
+    sorted_list = lst.copy()
+
+    # Compare adjacent values and swap them when they are
+    # in wrong order. Each pass moves largest
+    # remaining value towards end of list.
+    for i in range(len(sorted_list)):
+        swapped = False
+
+        for j in range(0, len(sorted_list) - 1 - i):
+            if sorted_list[j] > sorted_list[j + 1]:
+                sorted_list[j], sorted_list[j + 1] = (
+                    sorted_list[j + 1],
+                    sorted_list[j]
+                )
+                swapped = True
+
+        # If no values were swapped, list is already sorted.
+        if not swapped:
+            break
+
+    return sorted_list
 
 
 def merge_sort(lst):
@@ -45,7 +66,20 @@ def merge_sort(lst):
     - Add meaningful comments.
 
     """
-    pass
+    # A list with zero or one element is already sorted.
+    if len(lst) <= 1:
+        return lst.copy()
+
+    # Divide list into two smaller halves.
+    middle = len(lst) // 2
+    left = lst[:middle]
+    right = lst[middle:]
+
+    # Recursively sort both halves before merging.
+    left_sorted = merge_sort(left)
+    right_sorted = merge_sort(right)
+
+    return merge(left_sorted, right_sorted)
 
 
 def merge(left, right):
@@ -60,7 +94,28 @@ def merge(left, right):
     - Return the merged sorted list.
     - Add meaningful comments.
     """
-    pass
+    result = []
+    left_index = 0
+    right_index = 0
+
+    # Compare first remaining value from each list.
+    # Using <= keeps equal values from left list first,
+    # which helps preserve original relative order.
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index] <= right[right_index]:
+            result.append(left[left_index])
+            left_index += 1
+        else:
+            result.append(right[right_index])
+            right_index += 1
+
+    # Add any values remaining in left list.
+    result.extend(left[left_index:])
+
+    # Add any values remaining in right list.
+    result.extend(right[right_index:])
+
+    return result
 
 
 def main():
@@ -78,7 +133,15 @@ def main():
     # 5. Clearly label and display all results.
 
     print("\n=== DATASET #1 ===")
-    print("TODO: Create an unsorted dataset and test both sorting algorithms.")
+
+    # Game ratings represent an unsorted list of content ratings.
+    # Duplicate ratings are included to test how both algorithms
+    # handle equal values.
+    dataset_1 = [85, 62, 91, 74, 68, 95, 80, 74]
+
+    print("Original list:", dataset_1)
+    print("Bubble Sort:", bubble_sort(dataset_1))
+    print("Merge Sort:", merge_sort(dataset_1))
 
     # ===============================
     # TODO (Student): DATASET #2
@@ -91,7 +154,15 @@ def main():
     # 4. Compare the results.
 
     print("\n=== DATASET #2 ===")
-    print("TODO: Create a second dataset and compare sorting results.")
+
+    # This dataset uses different ratings and includes another
+    # duplicate value to compare the sorting results.
+    dataset_2 = [100, 45, 72, 88, 45, 63, 30, 99]
+
+    print("Original list:", dataset_2)
+    print("Bubble Sort:", bubble_sort(dataset_2))
+    print("Merge Sort:", merge_sort(dataset_2))
+    print("Results match:", bubble_sort(dataset_2) == merge_sort(dataset_2))
 
     # ===============================
     # TODO (Student): EDGE CASES
@@ -109,7 +180,26 @@ def main():
     # Explain what happens in each case.
 
     print("\n=== EDGE CASE TESTS ===")
-    print("TODO: Demonstrate and explain edge cases.")
+
+    # An empty list should be returned unchanged because there
+    # are no values that need to be sorted.
+    empty_list = []
+    print("Empty list:", bubble_sort(empty_list))
+    print("Empty list with Merge Sort:", merge_sort(empty_list))
+
+    # An already sorted list should remain in the same order.
+    # Bubble Sort can stop early cause no swaps are needed.
+    sorted_list = [10, 20, 30, 40, 50]
+    print("Already sorted list:", sorted_list)
+    print("Bubble Sort:", bubble_sort(sorted_list))
+    print("Merge Sort:", merge_sort(sorted_list))
+
+    # A single-element list is already sorted and should be
+    # returned without needing additional sorting.
+    single_element = [50]
+    print("Single-element list:", single_element)
+    print("Bubble Sort:", bubble_sort(single_element))
+    print("Merge Sort:", merge_sort(single_element))
 
 
 
