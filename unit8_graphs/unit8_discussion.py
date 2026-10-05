@@ -33,7 +33,29 @@ def bfs(graph, start):
     - How BFS differs from depth-first traversal.
     """
 
-    pass
+    # A queue is used so nodes are visited in the order they
+    # were discovered, allowing BFS to move level by level.
+    if start not in graph:
+        return []
+
+    queue = deque([start])
+    visited = {start}
+    traversal_order = []
+
+    while queue:
+        current = queue.popleft()
+        traversal_order.append(current)
+
+        # Neighbors are added to the queue so they can be visited
+        # after the other nodes at the current level.
+        for neighbor in graph[current]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+    # Unlike depth-first traversal, BFS finishes the closest
+    # neighbors before moving to nodes farther away.
+    return traversal_order
 
 
 def main():
@@ -51,7 +73,23 @@ def main():
     # 5. Use comments to explain what the nodes and edges represent.
 
     print("\n=== GRAPH STRUCTURE ===")
-    print("TODO: Create and display a graph.")
+
+    # Each game is a node, and an edge connects games
+    # with similar genres or player interests.
+    game_graph = {
+        "Minecraft": ["Terraria", "Stardew Valley"],
+        "Terraria": ["Minecraft", "Stardew Valley", "Elden Ring"],
+        "Stardew Valley": ["Minecraft", "Terraria", "Animal Crossing"],
+        "Elden Ring": ["Terraria", "Dark Souls", "Skyrim"],
+        "Animal Crossing": ["Stardew Valley", "The Sims"],
+        "Dark Souls": ["Elden Ring", "Skyrim"],
+        "Skyrim": ["Elden Ring", "Dark Souls", "The Sims"],
+        "The Sims": ["Animal Crossing", "Skyrim"]
+    }
+
+    print("Video game recommendation graph:")
+    for game, connections in game_graph.items():
+        print(f"{game}: {connections}")
 
     # ===============================
     # TODO (Student): BFS TRAVERSAL
@@ -66,7 +104,23 @@ def main():
     #    and demonstrate the updated traversal.
 
     print("\n=== BFS TRAVERSAL ===")
-    print("TODO: Perform and explain BFS traversal.")
+
+    start_game = "Minecraft"
+    traversal = bfs(game_graph, start_game)
+
+    print(f"Starting game: {start_game}")
+    print(f"BFS traversal: {traversal}")
+
+    # Add a new game connection to demonstrate how the graph
+    # and traversal can change when another node is added.
+    game_graph["Hades"] = ["Elden Ring", "Dark Souls"]
+    game_graph["Elden Ring"].append("Hades")
+
+    print("\nAfter adding Hades:")
+    print(f"Elden Ring connections: {game_graph['Elden Ring']}")
+
+    updated_traversal = bfs(game_graph, start_game)
+    print(f"Updated BFS traversal: {updated_traversal}")
 
     # ===============================
     # TODO (Student): EDGE CASES
@@ -84,7 +138,30 @@ def main():
     # Explain what happens in each case.
 
     print("\n=== EDGE CASE TESTS ===")
-    print("TODO: Demonstrate and explain edge cases.")
+
+    # Edge Case 1: Starting from a different node.
+    different_start = "Animal Crossing"
+    different_traversal = bfs(game_graph, different_start)
+
+    print(f"Starting from {different_start}:")
+    print(different_traversal)
+    print("The traversal order changes because BFS begins from a different node.")
+
+    # Edge Case 2: Starting with a node that does not exist.
+    missing_start = "Pokemon"
+    missing_traversal = bfs(game_graph, missing_start)
+
+    print(f"\nStarting from missing game {missing_start}:")
+    print(missing_traversal)
+    print("The function returns an empty list instead of causing an error.")
+
+    # Edge Case 3: An empty graph.
+    empty_graph = {}
+    empty_traversal = bfs(empty_graph, "Minecraft")
+
+    print("\nBFS on an empty graph:")
+    print(empty_traversal)
+    print("The function returns an empty list because there are no nodes to visit.")
 
 
 
